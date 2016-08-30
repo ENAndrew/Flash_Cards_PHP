@@ -1,0 +1,93 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    min-width: 800px;
+}
+
+.header {
+    text-align: center;
+    width: 800px;
+    background-color: #92d1d3;
+    padding-bottom: 10px;
+    margin-bottom: 40px;
+    margin-top: 30px;
+    border-radius: 10px;
+}
+
+#noStyle {
+    color: black;
+    text-decoration: none;
+}
+
+
+.choices {
+    display: flex;
+    width: 800px;
+    justify-content: space-around;
+    margin-bottom: 40px;
+}
+
+.choices .btn {
+    background-color: #515354;
+    width: 200px;
+    height: 70px;
+    color: white;
+    font-size: 20px;
+}
+
+.cards {
+    width: 800px;
+    background-color: #fafdd8; 
+    height: 475px;
+    display: flex;
+    justify-content: center;
+}
+
+.new-cards {
+    background-color: white;
+    height: 300px;
+    width: 500px;
+    margin-top: 100px;
+    -webkit-box-shadow: 9px 9px 21px -6px rgba(0,0,0,0.75);
+    -moz-box-shadow: 9px 9px 21px -6px rgba(0,0,0,0.75);
+    box-shadow: 9px 9px 21px -6px rgba(0,0,0,0.75);
+}
+
+.new-cards p {
+    text-align: center;
+    font-size: 35px;
+    margin-top: 120px;
+}
+
+.new-cards .btn {
+    background-color: #92d1d3;
+    margin-left: 85%;
+    margin-top: 70px;
+}
+
+.action-buttons {
+    background-color: #a8a66a;
+    margin-right: auto;
+    margin-left: auto;
+    width: 800px;
+    height: 80px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.action-buttons .btn {
+    height: 40px;
+    width: 200px;
+    font-size: 18px;
+    margin-top: 20px;
+    background-color: #92d1d3;
+}
+
+#addBtn {
+    width: 300px;
+    margin-top: 30px;
+}
+
