@@ -1,24 +1,25 @@
 $(document).ready(function(){
    
    
-    //var signsMaster = [];
+    var signsMaster = [];
     
     var currentCards = [];
+
 
     //API Interactions ////////////////////////////////////////
 
     //Database call function
-    function callDatabase(modifier, dataInfo) {
+    function callDatabase(modifier, word, status) {
       $.ajax({
-        url: "database.php?query=" + modifier,
-        data: { dataInfo },
+        url: "database.php?query=" + modifier + "&word=" + word + "&status=" + status,
+        //data: { dataInfo },
         error: function(jqXHR, errorText, exception) {
           console.log("The attempted database call has had an error.");
           console.log(errorText);
           console.log(exception);
         },
-        success: function(data) {
-          console.log(data);
+        success: function(returnData) {
+          console.log(returnData);
         },
         type: 'POST'
       });
@@ -34,25 +35,9 @@ $(document).ready(function(){
           words.push(val.word);
         });
       });
+      console.log(words);
       return words;
     };
-
-    //This function is returning something strange.  It is an array that is functional for some of the functions below, but not others.  The functions that switch what group of words 
-    //are being displayed work, as well as the randomizers function for any current array.  
-
-    //However, 
-
-    ///////////////////////////////////////////////////////////////////
-
-    //Initiate deck with all cards 
-    var initialWords = getFromDatabase("getAll");
-
-    var signsMaster = $.map(initialWords, function(value, index) {
-      return [value];
-    });
-
-    console.log(signsMaster[0]); //This logs 'undefined'
-
 
   
   //Puts a random item from current array into the placeholder text
@@ -61,7 +46,7 @@ $(document).ready(function(){
         $('#currentItem').text(item);
     };
     
-     //next button chooses a new random item from chosen array
+     //next button chooses a random item from chosen array
      $('.next').on('click', function(e) {
          e.preventDefault();
          if(currentCards.length > 0) {
@@ -72,19 +57,23 @@ $(document).ready(function(){
      });
     
     
-   ///header buttons switches which array being used
+   ///header button switches which array is being used
+
+   ////All available cards
      $('#all').on('click', function(e){
          e.preventDefault();
          $('#currentItem').text('All Available Cards');
-         currentCards = signsMaster;
+         currentCards = getFromDatabase("getAll");
      });
-     
+
+     ////Cards with "hard" status
      $('#hard').on('click', function(e) {
          e.preventDefault();
          $('#currentItem').text('Cards to Work On');
          currentCards = getFromDatabase("getHard");
      });
      
+     ////Cards with "easy" status
      $('#known').on('click', function(e){
          e.preventDefault();
          $('#currentItem').text('Cards You Know');
@@ -97,15 +86,11 @@ $(document).ready(function(){
     $('#addKnown').on('click', function(e) {
        e.preventDefault();
        var knownItem = $('#currentItem').text();
-       signsKnown.push(knownItem);
+       callDatabase("changeStatus", knownItem, "easy");
+
+       //this puts us back on all, I need to know if we're in hard category and reload that
        
-       //remove from hard deck if moving to easy, advances master deck
-       if(currentCards === signsNeedWork) {
-           var i = signsNeedWork.indexOf(knownItem);
-           signsNeedWork.splice(i, 1);
-       } else if(currentCards === signsMaster) {
-           switchCard(currentCards);
-       }
+       currentCards = getFromDatabase('getAll');
     });
     
     // need work pushes to signs not known
@@ -124,35 +109,30 @@ $(document).ready(function(){
        }
     });
 
-    /*$('#addWord').on('click', function(e) {
-       e.preventDefault();
-       var newWord = $('#enterWord').text();
-       var 
-       callDatabase("addWord", );*/
 
 
 
-    //This function is intended to alphabetize the set of all default words so they can then be displayed in order on the "Add Words" page.    
-    //However, there is a problem with the data coming from $getJSON such that the primary array is not being processed
+    //Alphabetize the set of all default words so they can then be displayed in order on the "Add Words" page.   
     function displayAlpha(arr) {
 
-      var alphaArray = $.map(arr, function(value, index){
-        return [value];
-      })
-      var wordsHtml = [];
+      var cardsUnsorted = [];
 
-      console.log(alphaArray);
+      cardsUnsorted = getFromDatabase("getAll");
 
-      for(var i = 0; i < alphaArray.length; i++) {
-        wordsHtml.push(alphaArray[i]);
-      }
+      console.log("unsorted: ", cardsUnsorted);
 
-      console.log(alphaArray);
+      var simpleArray = ["gasket", "bird", "bear"].sort();
+
+      console.log("simple", simpleArray);
+
+      alphaArray = cardsUnsorted.sort();
+      
+      console.log("alphabetized ", alphaArray);
 
       //$('#eachWord').html(wordsHtml.join(""));
 
     };
 
-    displayAlpha(signsMaster);
+    displayAlpha(currentCards);
     
 });

@@ -31,6 +31,7 @@ try {
 			$sqlstmt = $db_connect->prepare("SELECT word fROM vocab_words");
 			$sqlstmt->execute();
 			$allWords = $sqlstmt->fetchAll(PDO::FETCH_ASSOC);
+			//echo "<pre>" . print_r($allWords,true) . "</pre>";exit;
 			return json_encode($allWords);
 		} catch(PDOException $exception) {
 			echo "Could not get the vocab words: ", print_r($exception->getMessage());
@@ -50,12 +51,24 @@ try {
 		}
 	}
 
+	//Change word status (hard, easy, default)
+	function updateWord($db_connect, $word, $status) {
+		try{
+			$sqlstmt = $db_connect->prepare("UPDATE vocab_words SET status=:status WHERE word=:word");
+			$sqlstmt->execute(array("status" => $status, "word" => $word));
+			return true;
+		} catch(PDOException $exception) {
+			echo "Could not update this word: ", print_r($exception->getMessage());
+			return false;
+		}
+
+	}
+
 	//Handle requests by type/nature
 	function requestHandler($db_connect){
 
 		if(isset($_REQUEST['query'])) {
 
-			//This is functional on the surface, however, there is a problem with the data being returned or the parsing on the client side
 
 			$action = $_REQUEST['query'];
 
@@ -69,6 +82,10 @@ try {
 				case "getEasy":
 					echo getWords($db_connect, 'easy');
 					break;
+				case "changeStatus": 
+					$changeWord = $_REQUEST['word'];
+					$changeStatus = $_REQUEST['status'];
+					echo updateWord($db_connect, $changeWord, $changeStatus);  ///Can I just pass $_REQUEST['whatever']?
 			}
 			
 		} elseif(isset($_REQUEST['addForm'])) {
